@@ -3,13 +3,15 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 const Products = ({ data, type }) => {
   return (
     <>
-      <div className="group  overflow-hidden w-[48%] sm:w-[280px] rounded-md   hover:shadow-lg cursor-pointer h-fit ">
-        <div className=" relative w-full  flex flex-col justify-end  overflow-hidden items-center rounded-md h-fit sm:h-[415px]">
+      <div className="group shadow pt-2 border overflow-hidden w-[48%] sm:w-[280px] rounded-md   hover:shadow-lg cursor-pointer h-fit ">
+        <div className=" relative w-full  flex flex-col justify-end  overflow-hidden items-center rounded-md h-fit sm:h-[350px]">
+          {/* <div className=" border border-red-400 h-fit"> */}
           <img
             src={data.images}
-            className=" w-fit sm:w-[263px] relative transition-all duration-150 easy-linear sm:rounded-md sm:group-hover:w-[280px] group-hover:rounded-none"
+            className=" p-7 sm:p-2 h-fit relative transition-all duration-150 easy-linear sm:rounded-md sm:group-hover:w-fit group-hover:rounded-none"
             alt=""
           />
+          {/* </div> */}
           <div className=" absolute flex justify-between items-center sm:px-2 pt-0 sm:pt-4 top-3 sm:top-5 left-0 h-fit w-full ">
             {type === "New" ? (
               <div
@@ -45,11 +47,15 @@ const Products = ({ data, type }) => {
             </div>
           </div>
           <div className=" mt-2  w-full px-2 sm:px-3 mb-2 sm:mb-4">
+            <p className=" font-semibold text-gray-400 text-[10px] sm:text-[14px] w-full whitespace-nowrap overflow-hidden text-ellipsis">
+              {data.brand}
+            </p>
             <p className=" font-semibold text-[12px] sm:text-[16px] w-full whitespace-nowrap overflow-hidden text-ellipsis">
               {data.name}
             </p>
             <p className="font-medium text-[12px] sm:text-[16px]">
-              ${data.price}
+              <span className=" text-[16px] mr-[2px] font-medium">₹</span>
+              {data.price}
             </p>
           </div>
         </div>

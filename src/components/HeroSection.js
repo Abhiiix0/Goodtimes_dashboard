@@ -17,9 +17,15 @@ const HeroSection = () => {
   };
 
   const images = [
-    { id: 1, src: require("../img/hero-banner01.png") },
-    // { id: 2, src: require("../img/hero-banner01.png") },
-    // { id: 3, src: require("../img/hero-banner01.png") },
+    { id: 1, src: require("../img/casioBanner.jpg") },
+    // {
+    //   id: 2,
+    //   src: "https://www.fastrack.in/on/demandware.static/-/Sites-titan-master-catalog/default/dw511ff3f6/images/promotions/fastrack/Reflexcurv/Curv_1.jpg",
+    // },
+    // {
+    //   id: 3,
+    //   src: "https://cdn.shopify.com/s/files/1/0261/8900/4880/files/diesel-1.jpg?v=1688555865",
+    // },
   ];
   return (
     <section className="relative z-0">
@@ -28,8 +34,9 @@ const HeroSection = () => {
           <div key={index} className="">
             <img
               // style={{ background: `url(${image.src})` }}
+              alt="banner image"
               src={image.src}
-              className="w-full h-48 sm:h-auto"
+              className="w-full sm:h-fit"
             ></img>
           </div>
         ))}

@@ -11,8 +11,12 @@ const Home = () => {
         <HomeBanner2
           title="Season's Pairings / Statement Pairings"
           subtitle="Outfit That give maximum style with minimum effort"
-          imgurl1={require("../img/tshirt-banner.jpg")}
-          imgurl2={require("../img/bottom-banner.jpg")}
+          imgurl1={
+            "https://images.unsplash.com/photo-1595520407624-66b24f015830?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          }
+          imgurl2={
+            "https://images.unsplash.com/photo-1613520701290-480b81948f43?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          }
         />
         <HomeProductsContainer
           title="New Arrivals"
@@ -22,7 +26,9 @@ const Home = () => {
         <HomeBanner2
           title="Statement Staples"
           subtitle="Upgrade your everyday style with unique designs"
-          imgurl1={require("../img/banner3.jpg")}
+          imgurl1={
+            "https://www.fastrack.in/on/demandware.static/-/Sites-titan-master-catalog/default/dw511ff3f6/images/promotions/fastrack/Reflexcurv/Curv_1.jpg"
+          }
         />
         <HomeProductsContainer
           title="Season's Best Collections"

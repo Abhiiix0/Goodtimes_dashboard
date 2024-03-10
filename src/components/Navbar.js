@@ -8,9 +8,24 @@ import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import Headroom from "react-headroom";
+import { Modal, Button, Drawer } from "antd";
+import HttpsIcon from "@mui/icons-material/Https";
+// import { Footer } from "antd/es/layout/layout";
+import EmailIcon from "@mui/icons-material/Email";
+import PersonIcon from "@mui/icons-material/Person";
+import { useForm } from "react-hook-form";
+import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
 const Navbar = () => {
-  const [hides, sethides] = useState(true);
+  const { register, handleSubmit, reset } = useForm();
 
+  const onSubmit = (value) => {
+    console.log(value);
+  };
+
+  const [hides, sethides] = useState(true);
+  const [isopen, setisopen] = useState(false);
+  const [LR, setLR] = useState(false);
+  const [showPass, setshowPass] = useState(false);
   // useEffect(() => {
   //   window.addEventListener("scroll", stickNavbar);
   //   return () => window.removeEventListener("scroll", stickNavbar);
@@ -58,7 +73,211 @@ const Navbar = () => {
               {" "}
               <NavLink to="/contact">Contact Us</NavLink>{" "}
             </li>
-            <li className="  px-3">Login</li>
+            <li className="  px-3" onClick={() => setisopen(!isopen)}>
+              Login
+            </li>
+            <Modal
+              width={350}
+              open={isopen}
+              footer={null}
+              onCancel={() => setisopen(false)}
+            >
+              <div className=" py-6">
+                <p className=" text-2xl mb-4 font-semibold text-blue-500 text-center">
+                  {LR ? "login " : "Register"}
+                </p>
+                {LR ? (
+                  <form
+                    autoComplete="off"
+                    onSubmit={handleSubmit(onSubmit)}
+                    className=" flex flex-col gap-5"
+                  >
+                    <div className=" border flex justify-center rounded-md overflow-hidden items-center h-10">
+                      <label
+                        htmlFor="email"
+                        className=" px-2 h-full grid place-content-center bg-slate-300"
+                      >
+                        <EmailIcon className=" " />
+                      </label>
+                      <input
+                        className="outline-none border w-full h-full px-3"
+                        type="text"
+                        placeholder="Email"
+                        {...register("email", {
+                          required: "Email is required",
+                        })}
+                      />
+                    </div>
+
+                    <div className=" border flex  justify-center rounded-md overflow-hidden items-center h-10">
+                      <label
+                        htmlFor="password"
+                        className=" px-2 h-full grid place-content-center bg-slate-300"
+                      >
+                        {" "}
+                        <HttpsIcon h className=" " />
+                      </label>
+                      <input
+                        name="password"
+                        className=" border outline-none w-full h-full px-3"
+                        type={showPass ? "text" : "password"}
+                        placeholder="Password"
+                        {...register("password", {
+                          required: "Password is required",
+                        })}
+                      />
+                    </div>
+
+                    <div className=" flex justify-between overflow-hidden">
+                      <div className=" gap-1 flex items-center">
+                        <input
+                          type="checkbox"
+                          name="showP"
+                          id="showP"
+                          value="show"
+                          onChange={() => setshowPass(!showPass)}
+                        />
+                        {/* <input type="" name="" id="" /> */}
+                        <label htmlFor="showP">Show Password</label>
+                      </div>
+                      <p>Forget Password?</p>
+                    </div>
+
+                    <button
+                      type="submit"
+                      className=" w-full rounded-md bg-blue-500 text-white font-semibold h-10 text-[16px]"
+                    >
+                      Log in
+                    </button>
+                    <p className=" text-center">
+                      Dont Have An Account?
+                      <span
+                        className="  text-blue-500 cursor-pointer"
+                        onClick={() => {
+                          reset();
+                          setLR(!LR);
+                          setshowPass(false);
+                        }}
+                      >
+                        {" "}
+                        Sign Up
+                      </span>{" "}
+                    </p>
+                  </form>
+                ) : (
+                  <form
+                    autoComplete="off"
+                    onSubmit={handleSubmit(onSubmit)}
+                    className=" flex flex-col gap-5"
+                  >
+                    <div className=" border flex justify-center rounded-md overflow-hidden items-center h-10">
+                      <label
+                        htmlFor="name"
+                        className=" px-2 h-full grid place-content-center bg-slate-300"
+                      >
+                        {" "}
+                        <PersonIcon className=" " />
+                      </label>
+                      <input
+                        className="outline-none border w-full h-full px-3"
+                        type="text"
+                        placeholder="Username"
+                        autoComplete="off"
+                        {...register("username", {
+                          required: "Username is required",
+                        })}
+                      />
+                    </div>
+                    <div className=" border flex justify-center rounded-md overflow-hidden items-center h-10">
+                      <label
+                        htmlFor="email"
+                        className=" px-2 h-full grid place-content-center bg-slate-300"
+                      >
+                        {" "}
+                        <EmailIcon h className=" " />
+                      </label>
+                      <input
+                        className="outline-none border w-full h-full px-3"
+                        type="mail"
+                        placeholder="Email"
+                        {...register("email", {
+                          required: "email is required",
+                        })}
+                      />
+                    </div>
+
+                    <div className=" border flex justify-center rounded-md overflow-hidden items-center h-10">
+                      <label
+                        htmlFor="email"
+                        className=" px-2 h-full grid place-content-center bg-slate-300"
+                      >
+                        {" "}
+                        <PhoneIphoneIcon className=" " />
+                      </label>
+                      <input
+                        className="outline-none border w-full h-full px-3"
+                        type="number"
+                        placeholder="Phone Number"
+                        {...register("number", {
+                          required: "Number is required",
+                        })}
+                      />
+                    </div>
+                    <div className=" border flex justify-center rounded-md overflow-hidden items-center h-10">
+                      <label
+                        htmlFor="email"
+                        className=" px-2 h-full grid place-content-center bg-slate-300"
+                      >
+                        {" "}
+                        <HttpsIcon h className=" " />
+                      </label>
+                      <input
+                        className=" border outline-none w-full h-full px-3"
+                        type={showPass ? "text" : "password"}
+                        placeholder="Password"
+                        {...register("password", {
+                          required: "Password is required",
+                        })}
+                      />
+                    </div>
+                    <div className=" flex justify-between">
+                      <div className=" gap-1 flex items-center">
+                        <input
+                          type="checkbox"
+                          name="showP"
+                          id="showP"
+                          value="show"
+                          onChange={() => setshowPass(!showPass)}
+                        />
+                        {/* <input type="" name="" id="" /> */}
+                        <label htmlFor="showP">Show Password</label>
+                      </div>
+                      <p>Forget Password?</p>
+                    </div>
+                    <button
+                      type="submit"
+                      className=" rounded-md tracking-widest w-full bg-blue-500 text-white font-semibold h-10 text-[16px]"
+                    >
+                      Register
+                    </button>
+                    <p className=" text-center">
+                      Already Have An Account?
+                      <span
+                        className="  text-blue-500 cursor-pointer"
+                        onClick={() => {
+                          reset();
+                          setLR(!LR);
+                          setshowPass(false);
+                        }}
+                      >
+                        {" "}
+                        Login
+                      </span>{" "}
+                    </p>
+                  </form>
+                )}
+              </div>
+            </Modal>
           </ul>
         </header>
         <Headroom>
@@ -80,13 +299,13 @@ const Navbar = () => {
                 </span>
                 <NavLink to="/">
                   <img
-                    src={require("../img/powerlook.png")}
-                    className=" h-[42px] w-[200px] hidden lg:block"
+                    src={require("../img/goodtimesBlackVersion.jpeg")}
+                    className=" h-[52px] rounded-md hidden lg:block"
                     alt=""
                   />
                   <img
-                    src={require("../img/powerlook-short.png")}
-                    className=" h-[30px] w-fit block lg:hidden"
+                    src={require("../img/goodtimesBlackVersion.jpeg")}
+                    className=" h-[35px] rounded-md block lg:hidden"
                     alt=""
                   />
                 </NavLink>
@@ -98,7 +317,7 @@ const Navbar = () => {
                     to="/store"
                     className=" text-sm font-medium text-gray-600 transition-all duration-100 ease-linear border-orange-400 pb-2 w-fit px-1 hover:border-b-2"
                   >
-                    T-SHIRTS
+                    ANALOG
                   </NavLink>
                 </li>
                 <li className=" hidden lg:block">
@@ -106,7 +325,7 @@ const Navbar = () => {
                     href="#"
                     className=" text-sm font-medium text-gray-600 transition-all duration-100 ease-linear border-orange-400 pb-2 w-fit px-1 hover:border-b-2"
                   >
-                    SHIRTS
+                    DIGITAL
                   </a>
                 </li>
                 <li className=" hidden lg:block">
@@ -114,7 +333,7 @@ const Navbar = () => {
                     href="#"
                     className=" text-sm font-medium text-gray-600 transition-all duration-100 ease-linear border-orange-400 pb-2 w-fit px-1 hover:border-b-2"
                   >
-                    BOTTOMS
+                    SMARTWATCHS
                   </a>
                 </li>
                 <li className=" hidden lg:block">
@@ -122,7 +341,7 @@ const Navbar = () => {
                     href="#"
                     className=" text-sm font-medium text-gray-600 transition-all duration-100 ease-linear border-orange-400 pb-2 w-fit px-1 hover:border-b-2"
                   >
-                    JACKETS
+                    WATCH FINDER
                   </a>
                 </li>
                 <li>
@@ -137,7 +356,7 @@ const Navbar = () => {
                 </li>
                 <li>
                   <a href="#" className=" h-[25px] w-[30px]">
-                    <FavoriteBorderOutlinedIcon id="heart" />
+                    <FavoriteBorderOutlinedIcon id="heart" s />
                   </a>
                 </li>
                 <li>
@@ -147,55 +366,55 @@ const Navbar = () => {
                 </li>
               </ul>
             </div>
-
-            <div
-              className="bg-white absolute z-50 left-0 top-0 h-full w-80 lg:hidden"
-              style={{ display: hides ? "none" : "" }}
+            <Drawer
+              open={hides}
+              // header={false}
+              extra="Store"
+              className=" m-0 p-0"
+              // placement="left"
+              onClick={() => sethides(false)}
             >
-              <div className=" px-4 flex bg-white justify-between items-center mt-3 ">
-                <p className=" tracking-wider text-sm font-semibold text-gray-600">
-                  Store
-                </p>
-                <button
-                  onClick={() => {
-                    sethides(!hides);
-                    disableScroll();
-                  }}
-                  className=" bg-slate-100 shadow  rounded h-9 w-9"
-                >
-                  {" "}
-                  <ClearIcon />
-                </button>
+              <div
+                className="bg-white  m-0 lg:hidden"
+                // style={{ display: hides ? "none" : "" }}
+              >
+                <ul className="bg-white">
+                  <li className=" border-b-[2px] font-semibold text-[16px] py-4">
+                    <NavLink to="/store">T-shirt</NavLink>
+                  </li>
+                  <li className=" border-b-[2px] font-semibold text-[16px] py-4">
+                    <a href="#">Shirts</a>
+                  </li>
+                  <li className=" border-b-[2px] font-semibold text-[16px] py-4">
+                    <a href="#">Bottoms</a>
+                  </li>
+                  <li className=" border-b-[2px] font-semibold text-[16px] py-4">
+                    <a href="#">Jackets</a>
+                  </li>
+                </ul>
+                <ul className=" px-2 flex flex-col gap-5 h-fit py-6 bg-slate-200">
+                  <li className=" font-normal text-[16px]">
+                    <p
+                      onClick={() => {
+                        setisopen(!isopen);
+                        sethides(false);
+                      }}
+                    >
+                      Login
+                    </p>
+                  </li>
+                  <li className=" font-normal text-[16px] ">
+                    <a href="#">Track Order</a>
+                  </li>
+                  <li className=" font-normal text-[16px] ">
+                    <a href="#">Store Locator</a>
+                  </li>
+                  <li className=" font-normal text-[16px]">
+                    <NavLink to="/contact">Contact Us</NavLink>
+                  </li>
+                </ul>
               </div>
-              <ul className="bg-white h-[230px]">
-                <li className="px-4 border-b-[2px] font-semibold text-[16px] py-4">
-                  <NavLink to="/store">T-shirt</NavLink>
-                </li>
-                <li className="px-4 border-b-[2px] font-semibold text-[16px] py-4">
-                  <a href="#">Shirts</a>
-                </li>
-                <li className="px-4 border-b-[2px] font-semibold text-[16px] py-4">
-                  <a href="#">Bottoms</a>
-                </li>
-                <li className="px-4 border-b-[2px] font-semibold text-[16px] py-4">
-                  <a href="#">Jackets</a>
-                </li>
-              </ul>
-              <ul className=" bg-slate-200 h-[calc(100vh_-_280px)]">
-                <li className="px-4 font-normal text-[16px] py-4">
-                  <a href="#">Login</a>
-                </li>
-                <li className="px-4 font-normal text-[16px] py-4">
-                  <a href="#">Track Order</a>
-                </li>
-                <li className=" px-4 font-normal text-[16px] py-4">
-                  <a href="#">Store Locator</a>
-                </li>
-                <li className="px-4 font-normal text-[16px] py-4">
-                  <NavLink to="/contact">Contact Us</NavLink>
-                </li>
-              </ul>
-            </div>
+            </Drawer>
           </nav>
         </Headroom>
       </section>
