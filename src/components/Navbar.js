@@ -8,24 +8,36 @@ import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import Headroom from "react-headroom";
-import { Modal, Button, Drawer } from "antd";
+import { Modal, Button, Drawer, Badge, message } from "antd";
 import HttpsIcon from "@mui/icons-material/Https";
 // import { Footer } from "antd/es/layout/layout";
 import EmailIcon from "@mui/icons-material/Email";
 import PersonIcon from "@mui/icons-material/Person";
 import { useForm } from "react-hook-form";
 import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
+
+import { useSelector, useDispatch } from "react-redux";
+import { totalItems } from "../ReduxApi/AddToCart";
 const Navbar = () => {
+  const [messageApi, contextHolder] = message.useMessage();
   const { register, handleSubmit, reset } = useForm();
-
-  const onSubmit = (value) => {
-    console.log(value);
-  };
-
-  const [hides, sethides] = useState(true);
+  const cartItemssss = useSelector((state) => state.cart);
+  console.log(cartItemssss);
+  const [hides, sethides] = useState(false);
   const [isopen, setisopen] = useState(false);
-  const [LR, setLR] = useState(false);
+  const [LR, setLR] = useState(true);
   const [showPass, setshowPass] = useState(false);
+  const dispatch = useDispatch();
+  const cartItem = useSelector((state) => state.cartItem);
+  console.log(cartItem);
+  function totalcart() {
+    dispatch(totalItems());
+  }
+
+  useEffect(() => {
+    totalcart();
+  }, [cartItemssss]);
+
   // useEffect(() => {
   //   window.addEventListener("scroll", stickNavbar);
   //   return () => window.removeEventListener("scroll", stickNavbar);
@@ -39,6 +51,104 @@ const Navbar = () => {
   //   }
   // };
 
+  const success = (msg) => {
+    messageApi.open({
+      type: "success",
+      content: msg,
+    });
+  };
+  const onRegistersubmit = async (value) => {
+    try {
+      const response = await fetch(
+        "https://finalyeartyproject-production.up.railway.app/api/v1/auth/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(value),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      if (data.success === true) {
+        messageApi.open({
+          type: "success",
+          content: data.message,
+        });
+        console.log(data);
+      }
+      if (data.success === false) {
+        messageApi.open({
+          type: "error",
+          content: data.message,
+        });
+        console.log(data);
+      }
+      // if (data.success) {
+      //   setInterval(() => {
+      //     setLR(true);
+      //     reset();
+      //     // setLR(!LR);
+      //     setshowPass(false);
+      //   }, 2000);
+      // }
+      console.log("Success:", data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+    // console.log(value);
+  };
+  const onLoginsubmit = async (value) => {
+    try {
+      const response = await fetch(
+        "https://finalyeartyproject-production.up.railway.app/api/v1/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(value),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      // if (data.success) {
+      //   setInterval(() => {
+      //     setLR(true);
+      //     reset();
+      //     // setLR(!LR);
+      //     setshowPass(false);
+      //   }, 2000);
+      // }
+
+      if (data.success === true) {
+        messageApi.open({
+          type: "success",
+          content: data.message,
+        });
+        console.log(data);
+      }
+      if (data.success === false) {
+        messageApi.open({
+          type: "error",
+          content: data.message,
+        });
+      }
+      console.log("Success:", data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+    // console.log(value);
+  };
   const disableScroll = () => {
     // Get the current page scroll position
     // if any scroll is attempted,
@@ -61,6 +171,7 @@ const Navbar = () => {
 
   return (
     <>
+      {contextHolder}
       <section className="relative">
         <header
           // style={{ display: stickyclass ? "none" : "" }}
@@ -89,7 +200,7 @@ const Navbar = () => {
                 {LR ? (
                   <form
                     autoComplete="off"
-                    onSubmit={handleSubmit(onSubmit)}
+                    onSubmit={handleSubmit(onLoginsubmit)}
                     className=" flex flex-col gap-5"
                   >
                     <div className=" border flex justify-center rounded-md overflow-hidden items-center h-10">
@@ -167,7 +278,7 @@ const Navbar = () => {
                 ) : (
                   <form
                     autoComplete="off"
-                    onSubmit={handleSubmit(onSubmit)}
+                    onSubmit={handleSubmit(onRegistersubmit)}
                     className=" flex flex-col gap-5"
                   >
                     <div className=" border flex justify-center rounded-md overflow-hidden items-center h-10">
@@ -183,7 +294,7 @@ const Navbar = () => {
                         type="text"
                         placeholder="Username"
                         autoComplete="off"
-                        {...register("username", {
+                        {...register("name", {
                           required: "Username is required",
                         })}
                       />
@@ -218,7 +329,7 @@ const Navbar = () => {
                         className="outline-none border w-full h-full px-3"
                         type="number"
                         placeholder="Phone Number"
-                        {...register("number", {
+                        {...register("phone", {
                           required: "Number is required",
                         })}
                       />
@@ -360,7 +471,12 @@ const Navbar = () => {
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="  ">
+                  <a href="#" className=" relative  ">
+                    <Badge
+                      count={cartItem}
+                      size="small"
+                      className=" absolute p-0 top-0 right-0 h-2 text-[10px]  mr-[-10px] mt-[-5px]"
+                    ></Badge>
                     <ShoppingBagOutlinedIcon id="bag" />
                   </a>
                 </li>

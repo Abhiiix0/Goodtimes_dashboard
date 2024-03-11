@@ -5,6 +5,7 @@ import { Slider, Checkbox } from "antd";
 import { useForm } from "react-hook-form";
 import { resetWarned } from "antd/es/_util/warning";
 // import { Filter } from "@mui/icons-material";
+
 const Store = () => {
   const [datas, setdatas] = useState(products);
   const [hide, sethides] = useState(false);
@@ -17,10 +18,35 @@ const Store = () => {
   });
 
   const { register, handleSubmit, reset, resetField } = useForm();
-  const onsubmit = (value) => {
-    console.log(value);
+  const onsubmit = async (value) => {
+    try {
+      const response = await fetch(
+        "https://finalyeartyproject-production.up.railway.app/api/v1/auth/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(value),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const data = await response.json();
+      console.log("Success:", data);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+    // console.log(value);
   };
   // console.log(datas);
+
+  // const post = ()=>{
+
+  // }
 
   const handelPrice = (value) => {
     setFuilters({ ...Filter, priceRange: [value[0], value[1]] });
@@ -236,6 +262,7 @@ const Store = () => {
             </div>
             {/* <div className="p-5 border flex justify-center items-center"> */}
             <div className=" md:p-5 flex flex-wrap gap-3 items-center justify-evenly h-fit">
+              {filterProducts.length === 0 ? <p>NO Rproduct Found</p> : ""}
               {filterProducts.map((item) => (
                 <Products data={item} type=""></Products>
               ))}

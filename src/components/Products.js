@@ -1,6 +1,13 @@
 import React from "react";
 import FavoriteIcon from "@mui/icons-material/Favorite";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../ReduxApi/AddToCart";
 const Products = ({ data, type }) => {
+  const dispatch = useDispatch();
+
+  const handeladdcart = (item) => {
+    dispatch(addToCart(item));
+  };
   return (
     <>
       <div className="group shadow pt-2 border overflow-hidden w-[48%] sm:w-[280px] rounded-md   hover:shadow-lg cursor-pointer h-fit ">
@@ -57,6 +64,7 @@ const Products = ({ data, type }) => {
               <span className=" text-[16px] mr-[2px] font-medium">₹</span>
               {data.price}
             </p>
+            <button onClick={() => handeladdcart(data)}>add to cart</button>
           </div>
         </div>
       </div>
