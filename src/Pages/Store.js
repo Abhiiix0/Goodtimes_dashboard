@@ -232,7 +232,7 @@ const Store = () => {
               <div className=" md:hidden flex absolute left-0 bottom-0 border justify-center items-center w-full">
                 <div
                   onClick={() => sethides(!hide)}
-                  className=" text-black border-r-2 text-center w-full flex justify-center items-center py-3"
+                  className=" text-black cursor-pointer  bg-white border-r-2 text-center w-full flex justify-center items-center py-3"
                 >
                   CANCEL
                 </div>
@@ -261,7 +261,7 @@ const Store = () => {
               </p>
             </div>
             {/* <div className="p-5 border flex justify-center items-center"> */}
-            <div className=" md:p-5 flex flex-wrap gap-3 items-center justify-evenly h-fit">
+            <div className=" md:pl-5 flex flex-wrap gap-y-4 gap-x-2 items-center justify-evenly h-fit">
               {filterProducts.length === 0 ? <p>NO Rproduct Found</p> : ""}
               {filterProducts.map((item) => (
                 <Products data={item} type=""></Products>

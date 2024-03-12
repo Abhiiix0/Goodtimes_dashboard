@@ -8,7 +8,9 @@ import ShoppingBagOutlinedIcon from "@mui/icons-material/ShoppingBagOutlined";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import Headroom from "react-headroom";
-import { Modal, Button, Drawer, Badge, message } from "antd";
+import { DownOutlined, UserOutlined } from "@ant-design/icons";
+
+import { Modal, Button, Drawer, Badge, message, Dropdown } from "antd";
 import HttpsIcon from "@mui/icons-material/Https";
 // import { Footer } from "antd/es/layout/layout";
 import EmailIcon from "@mui/icons-material/Email";
@@ -18,6 +20,9 @@ import PhoneIphoneIcon from "@mui/icons-material/PhoneIphone";
 
 import { useSelector, useDispatch } from "react-redux";
 import { totalItems } from "../ReduxApi/AddToCart";
+import { logout } from "../ReduxApi/authSlice";
+// import { useDispatch } from "react-redux";
+import { setCurrentUser } from "../ReduxApi/authSlice";
 const Navbar = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const { register, handleSubmit, reset } = useForm();
@@ -27,36 +32,26 @@ const Navbar = () => {
   const [isopen, setisopen] = useState(false);
   const [LR, setLR] = useState(true);
   const [showPass, setshowPass] = useState(false);
+
   const dispatch = useDispatch();
-  const cartItem = useSelector((state) => state.cartItem);
+  const cartItem = useSelector((state) => state.cart.cartItem);
+
   console.log(cartItem);
   function totalcart() {
     dispatch(totalItems());
   }
 
+  function logoutt() {
+    dispatch(logout());
+  }
   useEffect(() => {
     totalcart();
   }, [cartItemssss]);
 
-  // useEffect(() => {
-  //   window.addEventListener("scroll", stickNavbar);
-  //   return () => window.removeEventListener("scroll", stickNavbar);
-  // }, []);
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const CurrentUser = useSelector((state) => state.auth.currentUser);
+  console.log(isAuthenticated);
 
-  // const stickNavbar = () => {
-  //   if (window !== undefined) {
-  //     let windowHeight = window.scrollY;
-  //     // window height changed for the demo
-  //     windowHeight > 25 ? setStickyClass(true) : setStickyClass(false);
-  //   }
-  // };
-
-  const success = (msg) => {
-    messageApi.open({
-      type: "success",
-      content: msg,
-    });
-  };
   const onRegistersubmit = async (value) => {
     try {
       const response = await fetch(
@@ -135,6 +130,8 @@ const Navbar = () => {
           type: "success",
           content: data.message,
         });
+        dispatch(setCurrentUser(data));
+        setisopen(false);
         console.log(data);
       }
       if (data.success === false) {
@@ -142,6 +139,7 @@ const Navbar = () => {
           type: "error",
           content: data.message,
         });
+        dispatch(setCurrentUser(data));
       }
       console.log("Success:", data);
     } catch (error) {
@@ -168,7 +166,23 @@ const Navbar = () => {
       };
     }
   };
-
+  const items = [
+    {
+      label: <a className=" pr-10">My Profile</a>,
+      key: "0",
+    },
+    {
+      label: <a>My Orders</a>,
+      key: "1",
+    },
+    {
+      type: "divider",
+    },
+    {
+      label: <a onClick={() => logoutt()}>Logout</a>,
+      key: "3",
+    },
+  ];
   return (
     <>
       {contextHolder}
@@ -184,9 +198,32 @@ const Navbar = () => {
               {" "}
               <NavLink to="/contact">Contact Us</NavLink>{" "}
             </li>
-            <li className="  px-3" onClick={() => setisopen(!isopen)}>
-              Login
-            </li>
+            {isAuthenticated ? (
+              <Dropdown
+                className=""
+                menu={{
+                  items,
+                }}
+                trigger={["click"]}
+              >
+                <a
+                  onClick={(e) => e.preventDefault()}
+                  className=" cursor-pointer  w-fit px-4 "
+                >
+                  <UserOutlined className="mr-1" />
+                  {CurrentUser.name}
+                  <DownOutlined className=" ml-3" />
+                </a>
+              </Dropdown>
+            ) : (
+              <li
+                className=" cursor-pointer  px-3"
+                onClick={() => setisopen(!isopen)}
+              >
+                Login
+              </li>
+            )}
+
             <Modal
               width={350}
               open={isopen}
@@ -485,7 +522,7 @@ const Navbar = () => {
             <Drawer
               open={hides}
               // header={false}
-              extra="Store"
+              extra={<NavLink to="/">Good Times</NavLink>}
               className=" m-0 p-0"
               // placement="left"
               onClick={() => sethides(false)}
@@ -495,30 +532,43 @@ const Navbar = () => {
                 // style={{ display: hides ? "none" : "" }}
               >
                 <ul className="bg-white">
-                  <li className=" border-b-[2px] font-semibold text-[16px] py-4">
-                    <NavLink to="/store">T-shirt</NavLink>
+                  <li className=" border-b-[2px] font-semibold text-[16px] pb-4">
+                    <NavLink to="/store">Analog</NavLink>
                   </li>
                   <li className=" border-b-[2px] font-semibold text-[16px] py-4">
-                    <a href="#">Shirts</a>
+                    <a href="#">Digital</a>
                   </li>
                   <li className=" border-b-[2px] font-semibold text-[16px] py-4">
-                    <a href="#">Bottoms</a>
+                    <a href="#">Smartwatch</a>
                   </li>
-                  <li className=" border-b-[2px] font-semibold text-[16px] py-4">
-                    <a href="#">Jackets</a>
+                  <li className=" font-semibold text-[16px] py-4">
+                    <a href="#">Watch Filnder</a>
                   </li>
                 </ul>
-                <ul className=" px-2 flex flex-col gap-5 h-fit py-6 bg-slate-200">
-                  <li className=" font-normal text-[16px]">
-                    <p
-                      onClick={() => {
-                        setisopen(!isopen);
-                        sethides(false);
-                      }}
-                    >
-                      Login
-                    </p>
-                  </li>
+                <ul className=" px-2 flex flex-col gap-5 h-fit py-6 rounded-md bg-slate-200">
+                  {isAuthenticated ? (
+                    <div>
+                      <li className=" font-normal text-[16px]">
+                        <p>My Account</p>
+                      </li>
+
+                      <li className="mt-4 font-normal text-[16px]">
+                        <p onClick={() => logoutt()}>logout</p>
+                      </li>
+                    </div>
+                  ) : (
+                    <li className=" font-normal text-[16px]">
+                      <p
+                        onClick={() => {
+                          setisopen(!isopen);
+                          sethides(false);
+                        }}
+                      >
+                        Login
+                      </p>
+                    </li>
+                  )}
+
                   <li className=" font-normal text-[16px] ">
                     <a href="#">Track Order</a>
                   </li>

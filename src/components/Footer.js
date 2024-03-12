@@ -40,7 +40,7 @@ const Footer = () => {
             <div className=" flex flex-col gap-2">
               <p className=" font-semibold">REGISTERED OFFICE ADDRESS</p>
               <p className=" text-sm text-gray-500 ">
-                Powerlook Apparels Pvt Ltd <br />
+                Good Times Pvt Ltd <br />
                 Lotus Corporate Park Wing G02 - 1502, <br />
                 Ram Mandir Lane, off Western Express Highway, Goregaon, Mumbai,
                 400063
@@ -77,18 +77,18 @@ const Footer = () => {
             <p className=" font-semibold">CATEGORIES</p>
             <div className=" lg:flex lg:flex-col lg:gap-1 mt-2">
               <NavLink className=" text-gray-500 text-sm border-r-2 border-gray-400 lg:border-r-0 h-fit pr-2  mr-2 hover:text-orange-500">
-                T-shirts
+                Analog
               </NavLink>
 
               <NavLink className=" text-gray-500 text-sm border-r-2 hover:text-orange-500 lg:border-r-0 border-gray-400 h-fit pr-2 mr-2">
-                Shirts
+                Digital
               </NavLink>
               <NavLink className=" text-gray-500 text-sm border-r-2 border-gray-400 lg:border-r-0 hover:text-orange-500 h-fit pr-2  mr-2">
-                Bottoms
+                Smartwatch
               </NavLink>
 
               <NavLink className=" text-gray-500 hover:text-orange-500 text-sm border-r-2 lg:border-r-0 border-gray-400 h-fit pr-2 mr-2">
-                Jackets
+                Watch Finder
               </NavLink>
             </div>
           </div>
@@ -98,7 +98,7 @@ const Footer = () => {
               <div>
                 <p>Mail</p>
                 <p className=" font-medium text-gray-500 text-sm">
-                  Support@powerlook.in
+                  Support@GoodTimes.in
                 </p>
               </div>
               <div>
@@ -154,7 +154,7 @@ const Footer = () => {
 
         <div className="w-full flex items-center justify-center">
           <p className=" w-full border-t-2 text-[14px] font-light  text-center py-2 w-fit]  text-gray-400">
-            &copy; 2024 www.powerlook.in All rights reserved.
+            &copy; 2024 www.GoodTimes.in All rights reserved.
           </p>
         </div>
       </footer>
