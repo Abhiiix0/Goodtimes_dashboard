@@ -81,7 +81,7 @@ const Products = () => {
       console.log(data);
       const res = await postProducts(formdatam, adminAuths.token);
       const datas = await res.json();
-      console.log(datas);
+      console.log(datas); //jj
     }
   };
   return (
