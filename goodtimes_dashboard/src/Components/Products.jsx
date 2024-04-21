@@ -1,6 +1,7 @@
+/* eslint-disable jsx-a11y/alt-text */
 import React from "react";
 import { Table, Modal } from "antd";
-import { getAllProducts, postProducts } from "../Api/Api";
+import { getAllProducts, getCategory, postProducts } from "../Api/Api";
 import { useState, useEffect } from "react";
 import { render } from "@testing-library/react";
 import { useForm } from "react-hook-form";
@@ -9,12 +10,14 @@ import {
   PreviewOutlined,
   ViewAgendaOutlined,
 } from "@mui/icons-material";
+import CategoryDropdown from "./CategoryDropdown";
 const Products = () => {
   const formdata = new FormData();
   const adminAuths = JSON.parse(localStorage.getItem("adminAuth"));
   console.log(adminAuths);
-  const { handleSubmit, register, reset, errors } = useForm();
+  const { handleSubmit, register, reset, errors, setValue } = useForm();
   const [addNewModalBtn, setaddNewModalBtn] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState([]);
   const columnss = [
     {
       title: "No",
@@ -71,19 +74,47 @@ const Products = () => {
     allProducts();
   }, []);
 
+
+
+
   const addNewProductForm = async (data) => {
-    formdata.append("name", name);
-    formdata.append("images", data.images);
+    formdata.append("name", data.name);
+    // upload all iamges to formdata
+    for (let i = 0; i < data.images.length; i++) {
+      formdata.append("images", data.images[i]);
+    }
+    formdata.append("price", data.price);
+    formdata.append("category", data.category);
+    formdata.append("description", data.description);
+    formdata.append("modelno", data.modelno);
+    formdata.append("brand", data.brand);
+    formdata.append("gender", data.gender);
+    formdata.append(" warranty", data.warranty);
+    formdata.append("country_of_origin", data.country_of_origin);
+    formdata.append("dialcolor", data.dialcolor);
+    formdata.append("strapColor", data.strapColor);
+
+
+
+    getAllProducts();
+    setaddNewModalBtn(false);
+
+
 
     if (data.name === "") {
       console.log("please enter name");
     } else {
       console.log(data);
-      const res = await postProducts(formdatam, adminAuths.token);
+      const res = await postProducts(formdata, adminAuths.token);
       const datas = await res.json();
-      console.log(datas); //jj
+      console.log(datas); //
     }
   };
+  const handleFileChange = (event) => {
+    // Store selected files in state
+    setSelectedFiles(Array.from(event.target.files));
+  };
+
   return (
     <div>
       <Modal
@@ -108,11 +139,18 @@ const Products = () => {
                 />
               </div>
               <div className=" w-full flex flex-col">
-                <label htmlFor="name">Categpry</label>
-                <input
+                <label htmlFor="name">Category</label>
+                <CategoryDropdown
+                  onSelectCategory={(value) =>
+                    setValue("category", value)
+                  }
+                />
+                {/* <input
+                  {...register("category")}
                   type="text"
                   className="border p-2 bg-slate-100 rounded-md"
-                />
+                /> */}
+
               </div>
             </div>
             <div className=" flex gap-2">
@@ -156,15 +194,6 @@ const Products = () => {
                 <label htmlFor="name">Gender</label>
                 <input
                   {...register("gender")}
-                  type="text"
-                  className="border p-2 bg-slate-100 rounded-md"
-                />
-              </div>
-
-              <div className=" w-full flex flex-col">
-                <label htmlFor="name">Slug</label>
-                <input
-                  {...register("slug")}
                   type="text"
                   className="border p-2 bg-slate-100 rounded-md"
                 />
@@ -213,22 +242,27 @@ const Products = () => {
               <p className=" font-semibold">Upload Product Images</p>
               <div className=" flex gap-2">
                 {/* <input type="file" name="" id="" />
-              <input type="file" name="" id="" /> */}
-                {/* <input type="file" name="" {...register("images")} id="" /> */}
+                <input type="file" name="" id="" />
+                <input type="file" name="" {...register("images")} id="" /> */}
 
                 <input
                   type="file"
                   name="images"
                   {...register("images")}
                   id="images"
+                  multiple
+                  onChange={handleFileChange}
                 />
               </div>
               <div className=" flex gap-2">
+                {selectedFiles.map((file, index) => (
+                  <p key={index}>{file.name}</p>
+                ))}
                 {/* <input type="file" name="" id="" />
-              <input type="file" name="" id="" /> */}
-                {/* <input type="file" name="" {...register("images[2]")} id="" /> */}
+                <input type="file" name="" id="" />
+                <input type="file" name="" {...register("images[2]")} id="" />
 
-                {/* <input type="file" name="" {...register("images[3]")} id="" /> */}
+                <input type="file" name="" {...register("images[3]")} id="" /> */}
               </div>
             </div>
             <div className=" mt-2">
