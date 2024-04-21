@@ -26,7 +26,7 @@ const Login = () => {
         );
         setInterval(() => {
           navigate("/admin/dashboard");
-        }, 1000);
+        }, 1000)
       }
       console.log("Success:", data);
     } catch (error) {
