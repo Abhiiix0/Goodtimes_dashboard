@@ -100,7 +100,7 @@ const DashBoard = () => {
                   <ShoppingCartIcon></ShoppingCartIcon> Products
                 </p>
               </div>
-              <div
+              {/* <div
                 onClick={() => handelMenuButtons("category")}
                 className={`cursor-pointer ${
                   category ? "bg-blue-400" : ""
@@ -111,7 +111,7 @@ const DashBoard = () => {
                   {" "}
                   <CategoryIcon /> Category
                 </p>
-              </div>
+              </div> */}
               <div
                 onClick={() => handelMenuButtons("costomer")}
                 className={`cursor-pointer ${
@@ -125,7 +125,7 @@ const DashBoard = () => {
               </div>
             </div>
             <div className=" flex flex-col gap-2">
-              <div
+              {/* <div
                 onClick={() => handelMenuButtons("setting")}
                 className={`cursor-pointer ${
                   setting ? "bg-blue-400" : ""
@@ -135,7 +135,7 @@ const DashBoard = () => {
                 <p>
                   <SettingsIcon></SettingsIcon> Settings
                 </p>
-              </div>
+              </div> */}
               <div
                 onClick={() => logout()}
                 className=" cursor-pointer bg-red-400 rounded-md text-white h-10 flex items-center p-2 pb-2 font-normal text-[16px] tracking-wider"
@@ -150,9 +150,9 @@ const DashBoard = () => {
         <div className="p-3 border bg-slate-100 h-[100vh] w-full">
           {dashboard && <Dashboard />}
           {products && <Products />}
-          {category && <Category />}
+          {/* {category && <Category />} */}
           {costomer && <Customers />}
-          {setting && <Setting />}
+          {/* {setting && <Setting />} */}
         </div>
       </div>
     </div>

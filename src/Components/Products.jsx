@@ -1,16 +1,24 @@
 /* eslint-disable jsx-a11y/alt-text */
-import React from "react";
-import { Table, Modal } from "antd";
-import { getAllProducts, getCategory, postProducts } from "../Api/Api";
+import React, { useRef } from "react";
+import { Table, Modal, message, Button, Space, Input } from "antd";
+import {
+  deleteprodapi,
+  getAllProducts,
+  getCategory,
+  postProducts,
+} from "../Api/Api";
 import { useState, useEffect } from "react";
 import { render } from "@testing-library/react";
 import { useForm } from "react-hook-form";
 import {
   DeleteOutline,
   PreviewOutlined,
+  SearchOutlined,
   ViewAgendaOutlined,
 } from "@mui/icons-material";
 import CategoryDropdown from "./CategoryDropdown";
+import ViewProduct from "./ViewProduct.jsx";
+import Highlighter from "react-highlight-words";
 const Products = () => {
   const formdata = new FormData();
   const adminAuths = JSON.parse(localStorage.getItem("adminAuth"));
@@ -18,6 +26,124 @@ const Products = () => {
   const { handleSubmit, register, reset, errors, setValue } = useForm();
   const [addNewModalBtn, setaddNewModalBtn] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [ViewProductbtnModal, setViewProductbtnModal] = useState(false);
+  const [viewdataModal, setviewdataModal] = useState();
+
+  const [searchText, setSearchText] = useState("");
+  const [searchedColumn, setSearchedColumn] = useState("");
+  const searchInput = useRef(null);
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+  const handleReset = (clearFilters) => {
+    clearFilters();
+    setSearchText("");
+  };
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({
+      setSelectedKeys,
+      selectedKeys,
+      confirm,
+      clearFilters,
+      close,
+    }) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) =>
+            setSelectedKeys(e.target.value ? [e.target.value] : [])
+          }
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{
+            marginBottom: 8,
+            display: "block",
+          }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Search
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Reset
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({
+                closeDropdown: false,
+              });
+              setSearchText(selectedKeys[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Filter
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
+            close
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? "#1677ff" : undefined,
+        }}
+      />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{
+            backgroundColor: "#ffc069",
+            padding: 0,
+          }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ""}
+        />
+      ) : (
+        text
+      ),
+  });
+
   const columnss = [
     {
       title: "No",
@@ -35,23 +161,64 @@ const Products = () => {
         return <img src={render.images[0]} className=" h-12 w-12"></img>;
       },
     },
-    { title: "Name", dataIndex: "name", key: "Name" },
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "Name",
+      ...getColumnSearchProps("name"),
+    },
     { title: "Price", dataIndex: "price", key: "price" },
+    {
+      title: "Category",
+      dataIndex: "category",
+      key: "category",
+      render: (_, render) => {
+        return <div>{render.category.name}</div>;
+      },
+      filters: [
+        {
+          text: "Digital Watches",
+          value: "Digital Watches",
+        },
+        {
+          text: "Analog Watches",
+          value: "Analog Watches",
+        },
+        {
+          text: "Smart Watches",
+          value: "Smart Watches",
+        },
+      ],
+      filterMode: "tree",
+      filterSearch: true,
+      onFilter: (value, record) => record.category.name.includes(value),
+      width: "30%",
+    },
     {
       title: "Action",
       dataIndex: "action",
       key: "action",
-      render: () => {
+      render: (_, render) => {
         return (
           <div className=" flex gap-2">
             {" "}
-            <button className=" bg-blue-600 h-8 w-8 rounded-md">
+            <a
+              href={`https://goodtim.netlify.app/products/${render?.slug}`}
+              // onClick={() => {
+              //   setviewdataModal(render);
+              //   setViewProductbtnModal(true);
+              // }}
+              className=" bg-blue-600 h-8 grid place-content-center w-8 rounded-md"
+            >
               <PreviewOutlined
                 style={{ color: "white" }}
                 fontSize="small"
               ></PreviewOutlined>
-            </button>
-            <button className=" bg-red-600 h-8 w-8 rounded-md">
+            </a>
+            <button
+              onClick={() => delteproduct(render._id)}
+              className=" bg-red-600 h-8 w-8 rounded-md"
+            >
               <DeleteOutline
                 style={{ color: "white" }}
                 fontSize="small"
@@ -74,9 +241,6 @@ const Products = () => {
     allProducts();
   }, []);
 
-
-
-
   const addNewProductForm = async (data) => {
     formdata.append("name", data.name);
     // upload all iamges to formdata
@@ -94,12 +258,8 @@ const Products = () => {
     formdata.append("dialcolor", data.dialcolor);
     formdata.append("strapColor", data.strapColor);
 
-
-
     getAllProducts();
     setaddNewModalBtn(false);
-
-
 
     if (data.name === "") {
       console.log("please enter name");
@@ -108,6 +268,21 @@ const Products = () => {
       const res = await postProducts(formdata, adminAuths.token);
       const datas = await res.json();
       console.log(datas); //
+    }
+  };
+  const delteproduct = async (id) => {
+    console.log(id, adminAuths.token);
+    try {
+      const ress = await deleteprodapi(id, adminAuths.token);
+      const data = await ress.json();
+      console.log(data);
+      message.open({
+        type: "success",
+        content: "status update sucessfully",
+      });
+      getAllProducts();
+    } catch (error) {
+      console.log(error);
     }
   };
   const handleFileChange = (event) => {
@@ -141,16 +316,13 @@ const Products = () => {
               <div className=" w-full flex flex-col">
                 <label htmlFor="name">Category</label>
                 <CategoryDropdown
-                  onSelectCategory={(value) =>
-                    setValue("category", value)
-                  }
+                  onSelectCategory={(value) => setValue("category", value)}
                 />
                 {/* <input
                   {...register("category")}
                   type="text"
                   className="border p-2 bg-slate-100 rounded-md"
                 /> */}
-
               </div>
             </div>
             <div className=" flex gap-2">
@@ -276,6 +448,11 @@ const Products = () => {
           </form>
         </div>
       </Modal>
+      <ViewProduct
+        open={ViewProductbtnModal}
+        onclose={setViewProductbtnModal}
+        productdata={viewdataModal}
+      />
       <div>
         <div className=" mb-4 flex justify-between w-full">
           <button
@@ -284,11 +461,11 @@ const Products = () => {
           >
             Add New
           </button>
-          <input
+          {/* <input
             type="text"
             placeholder="Search products..."
             className="p-2 w-[400px] outline-none border-blue-600 border rounded-md"
-          />
+          /> */}
         </div>
         <Table
           columns={columnss}

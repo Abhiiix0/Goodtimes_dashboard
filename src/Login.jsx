@@ -1,6 +1,7 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { loginAPi } from "./Api/Api";
+import { message } from "antd";
 import { useAuth } from "./ContextFile/Auth";
 import { NavLink, useNavigate } from "react-router-dom";
 const Login = () => {
@@ -17,7 +18,7 @@ const Login = () => {
       // }
       const data = await response.json();
       if (data.success) {
-        setauth({ ...auth, user: data.user, token: data.token });
+        setauth({ ...auth, user: data.admin, token: data.admin.token });
 
         console.log("daata", data);
         localStorage.setItem(
@@ -26,7 +27,12 @@ const Login = () => {
         );
         setInterval(() => {
           navigate("/admin/dashboard");
-        }, 1000)
+        }, 1000);
+      } else {
+        message.open({
+          type: "error",
+          content: data.message,
+        });
       }
       console.log("Success:", data);
     } catch (error) {
