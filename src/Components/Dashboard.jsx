@@ -409,7 +409,7 @@ const Dashboard = () => {
         <Table
           columns={column}
           dataSource={ordertable}
-          pagination={{ pageSize: 6 }}
+          pagination={{ pageSize: 5 }}
         ></Table>
       </div>
     </div>
